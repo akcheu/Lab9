@@ -55,7 +55,16 @@
     <button>Trigger a Global Error</button>
   </section>
 
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
   <script>
+    window.TrackJS && TrackJS.install({ 
+      token: "647266eba48f4cb2b2af516ae3c7b083"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+  </script>
+                          
+  <script>
+
     let calculateBtn = document.querySelector('#calculate');
     calculateBtn.addEventListener('click', () => {
       let output = document.querySelector('output');
@@ -66,7 +75,91 @@
     });
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
-    // TODO - Make buttons functional
+    const logBtn= errorBtns[0];
+
+    logBtn.addEventListener('click', () => {
+      console.log('Console Log Demo');
+    });
+
+    const errorBtn = errorBtns[1];
+    logBtn.addEventListener('click', () => {
+      console.error('Console Error Demo');
+      TrackJS.track('Testing TrackJS!');
+    });
+
+    const dirBtn = errorBtns[2];
+    dirBtn.addEventListener('click', () => {
+      console.dir(dirBtn);
+    });
+
+    const dirXMLBtn = errorBtns[3];
+    dirXMLBtn.addEventListener('click', () => {
+      console.dirxml(document.body);
+    });
+
+    const groupStartBtn = errorBtns[4];
+    groupStartBtn.addEventListener('click', () => {
+      console.group('Group Label');
+    });
+
+    const groupEndBtn = errorBtns[5];
+    groupEndBtn.addEventListener('click', () => {
+      console.group('Group Label');
+    });
+
+    const tableBtn = errorBtns[6];
+    tableBtn.addEventListener('click', () => {
+      console.table([['CSE 110'], ['CSE 140'], ['CSE 101']]);
+    });
+
+    const timerStartBtn = errorBtns[7];
+    timerStartBtn.addEventListener('click', () => {
+      console.time();
+    });
+
+    const timerEndBtn = errorBtns[8];
+    timerStartBtn.addEventListener('click', () => {
+      console.timeEnd();
+    });
+
+    const traceBtn = errorBtns[9];
+    traceBtn.addEventListener('click', () => {
+      const deep = () => { deeper(); };
+      const deeper = () => { deepest(); };
+      const deepest = () => { console.trace(); };
+      const traceTest = () => { deep(); };
+      traceTest();
+    });
+
+    window.onerror = function(message, url, line, col, error) {
+      console.log('Sadly an error happened friend');
+      TrackJS.track('Testing TrackJS!');
+      return false;
+    }
+
+    const globalBtn = errorBtns[10];
+    globalBtn.addEventListener('click', () => {
+      console.log(boom.explode())
+    });
+
+    class NaNError extends Error {
+      constructor(message) {
+        super(message);
+        this.name = "NaNError"
+      }
+    }
+
+    try {
+      let a = NaN;
+      if (isNaN(a)) throw new NaNError("Not a number");
+      TrackJS.track('Testing TrackJS!');
+      var example = a + 10;
+    } catch (err) {
+      alert(err);
+    } finally {
+      console.log('finally block');
+    }
+
   </script>
 </body>
 </html>
